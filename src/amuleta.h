@@ -121,6 +121,7 @@ struct actor *create_player(void);
 void run_game(struct game *g);
 void handle_key(struct game *g, struct tb_event *ev);
 void do_act(struct game *g, struct actor *a);
+void move_actor(struct game *g, struct actor *a, int relx, int rely);
 
 /*  ui.c */
 extern struct tb_cell

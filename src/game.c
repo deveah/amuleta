@@ -159,6 +159,16 @@ void handle_key(struct game *g, struct tb_event *ev)
     DEBUG("User requested exit\n");
     g->running = 0;
   }
+
+  if ((ev->key == TB_KEY_ARROW_UP) || (ev->ch == 'k')) {
+    move_actor(g, g->player,  0, -1);
+  } else if ((ev->key == TB_KEY_ARROW_DOWN) || (ev->ch == 'j')) {
+    move_actor(g, g->player,  0,  1);
+  } else if ((ev->key == TB_KEY_ARROW_LEFT) || (ev->ch == 'h')) {
+    move_actor(g, g->player, -1,  0);
+  } else if ((ev->key == TB_KEY_ARROW_RIGHT) || (ev->ch == 'l')) {
+    move_actor(g, g->player,  1,  0);
+  }
 }
 
 /*
@@ -182,5 +192,26 @@ void do_act(struct game *g, struct actor *a)
   } else {
     /*  TODO */
   }
+}
+
+/*
+ *  attempts to move the given actor relx units horizontally and rely units
+ *  vertically; if the destination does not support an actor, do nothing
+ *
+ *  struct game *g  -- the game state
+ *  struct actor *a -- the actor in question
+ *  int relx, rely  -- relative (x, y) coordinates
+ *  void return
+ */
+void move_actor(struct game *g, struct actor *a, int relx, int rely)
+{
+  /*  an actor cannot move on a solid tile */
+  if (g->dungeon->map[a->z]->tile[a->x + relx][a->y + rely]->flags & TILE_FLAG_SOLID) {
+    return;
+  }
+
+  /*  update the coordinates */
+  a->x += relx;
+  a->y += rely;
 }
 

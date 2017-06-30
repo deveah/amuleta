@@ -129,6 +129,7 @@ extern struct tb_cell
   *highlighted_character_map;
 
 void draw_map(struct game *g, int z);
+void draw_title_screen(void);
 struct tb_cell *generate_character_map(int fg, int bg);
 void free_character_map(struct tb_cell *charmap);
 void tb_puts(int x, int y, struct tb_cell *charmap, char *s);

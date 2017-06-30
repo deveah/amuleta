@@ -62,6 +62,38 @@ void draw_map(struct game *g, int z)
 }
 
 /*
+ *  draws the title screen and waits for user confirmation
+ *
+ *  void return
+ */
+void draw_title_screen(void)
+{
+  /*  needed for the logo */
+  struct tb_cell *yellow_character_map = generate_character_map(TB_YELLOW, TB_DEFAULT);
+
+  char *logo[] = {
+    "   __    __  __  __  __  __    ____  ____   __   ",
+    "  /__\\  (  \\/  )(  )(  )(  )  ( ___)(_  _) /__\\  ",
+    " /(__)\\  )    (  )(__)(  )(__  )__)   )(  /(__)\\ ",
+    "(__)(__)(_/\\/\\_)(______)(____)(____) (__)(__)(__)"};
+
+  /*  draw the logo */
+  int i;
+  for (i = 0; i < 4; i++) {
+    tb_puts((MINIMUM_TERMINAL_WIDTH - strlen(logo[0])) / 2, 10+i,
+      yellow_character_map, logo[i]);
+  }
+
+  tb_present();
+
+  /*  wait for a key press */
+  struct tb_event ev;
+  tb_poll_event(&ev);
+
+  free_character_map(yellow_character_map);
+}
+
+/*
  *  allocates an array of predefined termbox cells, containing the ASCII
  *  character map in range 0 .. 255, both inclusively
  *

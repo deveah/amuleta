@@ -79,6 +79,9 @@ int main(int argc, char **argv)
   default_character_map     = generate_character_map(TB_WHITE, TB_DEFAULT);
   highlighted_character_map = generate_character_map(TB_WHITE | TB_BOLD, TB_DEFAULT);
 
+  /*  show the title screen */
+  draw_title_screen();
+
   /*  run the game */
   run_game(g);
 

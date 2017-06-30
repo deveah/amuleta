@@ -160,6 +160,7 @@ void handle_key(struct game *g, struct tb_event *ev)
     g->running = 0;
   }
 
+  /*  handle movement */
   if ((ev->key == TB_KEY_ARROW_UP) || (ev->ch == 'k')) {
     move_actor(g, g->player,  0, -1);
   } else if ((ev->key == TB_KEY_ARROW_DOWN) || (ev->ch == 'j')) {

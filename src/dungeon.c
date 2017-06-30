@@ -22,6 +22,7 @@ struct dungeon *generate_dungeon(void)
   /*  allocate dungeon struct */
   struct dungeon *d = (struct dungeon*)malloc(sizeof(struct dungeon));
   assert(d != NULL);
+  DEBUG("Allocated dungeon @0x%p\n", d);
 
   /*  generate maps */
   int i;
@@ -29,6 +30,7 @@ struct dungeon *generate_dungeon(void)
     d->map[i] = generate_map();
   }
 
+  DEBUG("Finished creating the dungeon\n");
   return d;
 }
 
@@ -44,6 +46,7 @@ struct map *generate_map(void)
   /*  allocate map struct */
   struct map *m = (struct map*)malloc(sizeof(struct map));
   assert(m != NULL);
+  DEBUG("Allocated map @0x%p\n", m);
 
   /*  basic map generation -- fill the map with floor tiles, and border the
    *  level with wall tiles */
@@ -58,6 +61,7 @@ struct map *generate_map(void)
     }
   }
 
+  DEBUG("Finished generating the map\n");
   return m;
 }
 
@@ -73,9 +77,11 @@ void free_dungeon(struct dungeon *d)
   int i;
   for (i = 0; i < DUNGEON_DEPTH; i++) {
     free(d->map[i]);
+    DEBUG("Deallocated map @0x%p (%i)\n", d->map[i], i);
   }
 
   /*  free the dungeon structure */
   free(d);
+  DEBUG("Deallocated dungeon @0x%p\n", d);
 }
 

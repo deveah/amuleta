@@ -12,6 +12,13 @@
 #include <termbox.h>
 #include "amuleta.h"
 
+/*  the player actor's appearance */
+struct tb_cell player_cell = {
+  .ch = '@',
+  .fg = TB_WHITE,
+  .bg = TB_DEFAULT
+};
+
 /*
  *  initialize the game, creating the dungeon and the player
  *
@@ -23,10 +30,12 @@ struct game *initialize_game(unsigned int random_seed)
   /*  allocate the game structure */
   struct game *g = (struct game*)malloc(sizeof(struct game));
   assert(g != NULL);
+  DEBUG("Allocated game structure @0x%p\n", g);
 
   /*  save the random seed for future reference */
   g->random_seed = random_seed;
   srand(g->random_seed);
+  DEBUG("Random seed is %i\n", g->random_seed);
   
   /*  generate the dungeon */
   g->dungeon = generate_dungeon();
@@ -41,6 +50,7 @@ struct game *initialize_game(unsigned int random_seed)
   /*  mark the game as not running (yet) */
   g->running = 0;
 
+  DEBUG("Finished initializing game structure\n");
   return g;
 }
 
@@ -48,6 +58,7 @@ struct game *initialize_game(unsigned int random_seed)
  *  destroys a game structure, including all of its allocated data
  *
  *  struct game *g -- the game structure to be deallocated
+ *  void return
  */
 void destroy_game(struct game *g)
 {
@@ -63,6 +74,7 @@ void destroy_game(struct game *g)
   }
 
   free(g);
+  DEBUG("Deallocated game structure @0x%p\n", g);
 }
 
 /*
@@ -74,16 +86,11 @@ struct actor *create_player(void)
 {
   /*  allocate the actor structure */
   struct actor *a = (struct actor*)malloc(sizeof(struct actor));
+  assert (a != NULL);
+  DEBUG("Allocated player structure @0x%p\n", a);
 
   /*  set the name of the player; TODO: ask the user for this */
   a->name = "You";
-
-  /*  set the player's cell appearance */
-  struct tb_cell player_cell = {
-    .ch = '@',
-    .fg = TB_WHITE,
-    .bg = TB_DEFAULT
-  };
 
   a->cell = &player_cell;
 
@@ -105,26 +112,75 @@ struct actor *create_player(void)
  *  begins playing a game
  *
  *  struct game *g -- the game state structure
+ *  void return
  */
 void run_game(struct game *g)
 {
-  struct tb_event ev;
-
   /*  flag the game as running */
   g->running = 1;
+  DEBUG("Started game session\n");
 
   while (g->running) {
     
-    /*  draw the user interface */
-    draw_map(g, g->player->z);
+    /*  loop through all the actors in the game, and make them act */
+    struct actor *current = g->actors;
 
-    /*  ask for user input */
-    tb_poll_event(&ev);
+    while (current) {
+      DEBUG("Current turn: actor @0x%p (%s)\n", current, current->name);
+      do_act(g, current);
 
-    /*  if the user pressed 'q', exit the game */
-    if ((ev.type == TB_EVENT_KEY) && (ev.ch == 'q')) {
-      g->running = 0;
+      /*  check for an early game exit request */
+      if (!g->running) {
+        break;
+      }
+
+      current = current->next;
     }
+  }
+}
+
+/*
+ *  handles a key press event
+ *
+ *  struct tb_event *ev -- the termbox event structure
+ *  void return
+ */
+void handle_key(struct game *g, struct tb_event *ev)
+{
+  /*  if the event is not a key press event, do nothing */
+  if (ev->type != TB_EVENT_KEY) {
+    return;
+  }
+
+  DEBUG("Handling key '%c' (code %i)\n", ev->ch, ev->ch);
+
+  /*  handle an exit request */
+  if (ev->ch == 'Q') {
+    DEBUG("User requested exit\n");
+    g->running = 0;
+  }
+}
+
+/*
+ *  makes an actor act; if the actor is player-controlled, act depending on
+ *  the user's input; if not, let the computer make the actor complete its turn
+ *
+ *  struct game *g  -- the game structure
+ *  struct actor *a -- the actor in question
+ *  void return
+ */
+void do_act(struct game *g, struct actor *a)
+{
+  if (a == g->player) {
+    /*  if the actor in question is the player, draw the interface, ask for
+     *  input, and then act accordingly */
+    struct tb_event ev;
+
+    draw_map(g, g->player->z);
+    tb_poll_event(&ev);
+    handle_key(g, &ev);
+  } else {
+    /*  TODO */
   }
 }
 

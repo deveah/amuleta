@@ -22,6 +22,8 @@ void draw_map(struct game *g, int z)
   struct map *m = g->dungeon->map[z];
   int i, j;
 
+  DEBUG("Drawing the screen\n");
+
   /*  clear the screen before drawing */
   tb_clear();
 
@@ -36,6 +38,8 @@ void draw_map(struct game *g, int z)
   struct actor *current = g->actors;
   while (current) {
     if (current->z == z) {
+      DEBUG("Drawing actor @0x%p (%s) at %i, %i\n", current,
+        current->name, current->x, current->y);
       tb_put_cell(current->x, current->y, current->cell);
     }
     current = current->next;
@@ -43,5 +47,7 @@ void draw_map(struct game *g, int z)
 
   /*  present the screen buffer */
   tb_present();
+
+  DEBUG("Finised drawing the screen\n");
 }
 

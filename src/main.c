@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   }
 
   /*  indicate that termbox is running and save the terminal dimensions */
-  tb_initialized = 1;
+  tb_initialized  = 1;
   terminal_width  = tb_width();
   terminal_height = tb_height();
 
@@ -62,6 +62,9 @@ int main(int argc, char **argv)
     return -1;
   }
 
+  /*  initialize the log file */
+  initialize_log();
+
   struct game *g = NULL;
 
   /*  if the user has provided a random seed, use that one; if not, use the
@@ -72,10 +75,14 @@ int main(int argc, char **argv)
     g = initialize_game(atoi(argv[1]));
   }
 
+  /*  run the game */
   run_game(g);
+
+  /*  deallocate the game's resources */
   destroy_game(g);
 
-  /*  terminate termbox and exit */
+  /*  terminate termbox, logging, and exit */
+  terminate_log();
   tb_shutdown();
   return 0;
 }

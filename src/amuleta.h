@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <stdio.h>
+#include <time.h>
 #include <termbox.h>
 
 /*  terminal minimum size requirements */
@@ -97,6 +99,16 @@ struct game {
   struct actor *actors;
 };
 
+/*  log.c */
+#define LOG_FILE_PATH "log.txt"
+
+extern FILE *log_file;
+void initialize_log(void);
+void terminate_log(void);
+void append_log(char *format, ...);
+
+#define DEBUG(format, ...) append_log("[%i -- %s] " format, time(NULL), __FUNCTION__, ##__VA_ARGS__) 
+
 /*  dungeon.c */
 struct dungeon *generate_dungeon(void);
 void free_dungeon(struct dungeon *d);
@@ -107,6 +119,8 @@ struct game *initialize_game(unsigned int random_seed);
 void destroy_game(struct game *g);
 struct actor *create_player(void);
 void run_game(struct game *g);
+void handle_key(struct game *g, struct tb_event *ev);
+void do_act(struct game *g, struct actor *a);
 
 /*  ui.c */
 void draw_map(struct game *g, int z);

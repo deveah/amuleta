@@ -107,7 +107,7 @@ void initialize_log(void);
 void terminate_log(void);
 void append_log(char *format, ...);
 
-#define DEBUG(format, ...) append_log("[%i -- %s] " format, time(NULL), __FUNCTION__, ##__VA_ARGS__) 
+#define DEBUG(format, ...) append_log("[%i -- %s:%s:%i] " format, time(NULL), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) 
 
 /*  dungeon.c */
 struct dungeon *generate_dungeon(void);
@@ -123,5 +123,12 @@ void handle_key(struct game *g, struct tb_event *ev);
 void do_act(struct game *g, struct actor *a);
 
 /*  ui.c */
+extern struct tb_cell
+  *default_character_map,
+  *highlighted_character_map;
+
 void draw_map(struct game *g, int z);
+struct tb_cell *generate_character_map(int fg, int bg);
+void free_character_map(struct tb_cell *charmap);
+void tb_puts(int x, int y, struct tb_cell *charmap, char *s);
 

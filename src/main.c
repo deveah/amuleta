@@ -75,14 +75,20 @@ int main(int argc, char **argv)
     g = initialize_game(atoi(argv[1]));
   }
 
+  /*  generate the character maps used to display strings */
+  default_character_map     = generate_character_map(TB_WHITE, TB_DEFAULT);
+  highlighted_character_map = generate_character_map(TB_WHITE | TB_BOLD, TB_DEFAULT);
+
   /*  run the game */
   run_game(g);
 
   /*  deallocate the game's resources */
   destroy_game(g);
 
-  /*  terminate termbox, logging, and exit */
+  /*  destroy all resources and exit */
   terminate_log();
+  free_character_map(default_character_map);
+  free_character_map(highlighted_character_map);
   tb_shutdown();
   return 0;
 }

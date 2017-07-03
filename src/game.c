@@ -35,7 +35,7 @@ struct game *initialize_game(unsigned int random_seed)
   /*  save the random seed for future reference */
   g->random_seed = random_seed;
   srand(g->random_seed);
-  DEBUG("Random seed is %i\n", g->random_seed);
+  INFO("Random seed is %i\n", g->random_seed);
   
   /*  generate the dungeon */
   g->dungeon = generate_dungeon();
@@ -118,7 +118,7 @@ void run_game(struct game *g)
 {
   /*  flag the game as running */
   g->running = 1;
-  DEBUG("Started game session\n");
+  INFO("Started game session\n");
 
   while (g->running) {
     
@@ -137,6 +137,8 @@ void run_game(struct game *g)
       current = current->next;
     }
   }
+
+  INFO("Ended game session\n");
 }
 
 /*
@@ -208,6 +210,8 @@ void move_actor(struct game *g, struct actor *a, int relx, int rely)
 {
   /*  an actor cannot move on a solid tile */
   if (g->dungeon->map[a->z]->tile[a->x + relx][a->y + rely]->flags & TILE_FLAG_SOLID) {
+    DEBUG("Actor @0x%p (%s) tried to move onto a solid tile: (%i, %i)\n", a,
+      a->name, a->x + relx, a->y + rely);
     return;
   }
 

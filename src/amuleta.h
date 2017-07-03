@@ -107,7 +107,10 @@ void initialize_log(void);
 void terminate_log(void);
 void append_log(char *format, ...);
 
-#define DEBUG(format, ...) append_log("[%i -- %s:%s:%i] " format, time(NULL), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) 
+#define DEBUG(format, ...) append_log("[%i -- %s:%s:%i] [DBG] " format, time(NULL), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) 
+#define INFO(format, ...) append_log("[%i -- %s:%s:%i] [INF] " format, time(NULL), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) 
+#define WARN(format, ...) append_log("[%i -- %s:%s:%i] [WRN] " format, time(NULL), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) 
+#define ERROR(format, ...) append_log("[%i -- %s:%s:%i] [ERR] " format, time(NULL), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) 
 
 /*  dungeon.c */
 struct dungeon *generate_dungeon(void);

@@ -25,7 +25,7 @@ void initialize_log(void)
   log_file = fopen(LOG_FILE_PATH, "w");
   assert(log_file != NULL);
 
-  append_log("Amuleta logging initialized at timestamp %i\n", time(NULL));
+  INFO("Amuleta logging initialized at timestamp %i\n", time(NULL));
 }
 
 /*
@@ -40,7 +40,7 @@ void terminate_log(void)
     return;
   }
 
-  append_log("Amuleta logging terminated at timestamp %i\n", time(NULL));
+  INFO("Amuleta logging terminated at timestamp %i\n", time(NULL));
   fclose(log_file);
 }
 
@@ -52,20 +52,20 @@ void terminate_log(void)
  */
 void append_log(char *format, ...)
 {
-	va_list args;
+  va_list args;
 
   /*  if there's nothing to format, do nothing */
-	if (format == NULL) {
-		return;
+  if (format == NULL) {
+    return;
   }
 
   /*  if the log file is not open, do nothing */
-	if (log_file == NULL) {
-		return;
-	}
+  if (log_file == NULL) {
+    return;
+  }
 
-	va_start(args, format);
-	vfprintf(log_file, format, args);
-	va_end(args);
+  va_start(args, format);
+  vfprintf(log_file, format, args);
+  va_end(args);
 }
 

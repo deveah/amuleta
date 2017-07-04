@@ -5,6 +5,8 @@
   <meta charset="utf-8">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.css" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:100" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300" rel="stylesheet">
 
   <style>
@@ -39,6 +41,18 @@
 
   p {
     line-height: 1.5;
+  }
+
+  .code {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 100;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: #333;
+    background: #fafafa;
+
+    width: 100%;
+    padding: 1rem;
   }
 
   a {
@@ -77,5 +91,22 @@
   <p>The project is open source, licensed under the terms and conditions
   of the <a href="https://en.wikipedia.org/wiki/MIT_License">MIT License</a>.
   Contributions are welcome and encouraged.</p>
+
+  <div class="spacer"></div>
+
+  <p>To fetch, build, and play the game:</p>
+
+  <div class="code">
+    $ git clone https://github.com/deveah/amuleta<br>
+    $ cd amuleta<br>
+    $ make<br>
+    $ ./amuleta
+  </div>
+
+  <p>You will need <a href="https://github.com/nsf/termbox">termbox</a>.</p>
+
+  <div class="spacer"></div>
+
+  <div style="height: 5rem;"></div>
 </body>
 </html>

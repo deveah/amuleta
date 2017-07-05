@@ -47,6 +47,12 @@ struct game *initialize_game(unsigned int random_seed)
   g->actors = g->player;
   g->player->next = NULL;
 
+  /*  populate the dungeon */
+  int i;
+  for (i = 0; i < DUNGEON_DEPTH; i++) {
+    populate_map(g, i);
+  }
+
   /*  mark the game as not running (yet) */
   g->running = 0;
 
@@ -198,6 +204,28 @@ void do_act(struct game *g, struct actor *a)
 }
 
 /*
+ *  finds an actor (or NULL) at a given position in the dungeon
+ *
+ *  struct game *g        -- the attached game instance
+ *  int x, y, z           -- target coordinates
+ *  struct actor *return  -- the actor, or NULL if no actor present
+ */
+struct actor *find_actor_by_position(struct game *g, int x, int y, int z)
+{
+  struct actor *current = g->actors;
+
+  while (current) {
+    if ((current->x == x) && (current->y == y) && (current->z == z)) {
+      return current;
+    }
+
+    current = current->next;
+  }
+
+  return NULL;
+}
+
+/*
  *  attempts to move the given actor relx units horizontally and rely units
  *  vertically; if the destination does not support an actor, do nothing
  *
@@ -215,8 +243,56 @@ void move_actor(struct game *g, struct actor *a, int relx, int rely)
     return;
   }
 
+  /*  an actor may attempt to move onto a tile occupied by another actor,
+   *  and this will trigger a melee attack */
+  struct actor *target = find_actor_by_position(g, a->x + relx, a->y + rely,
+                                                a->z);
+  if (target != NULL) {
+    melee_attack(g, a, target);
+    return;
+  }
+
   /*  update the coordinates */
   a->x += relx;
   a->y += rely;
+}
+
+/*
+ *  attempts to perform a melee attack
+ *
+ *  struct game *g          -- the game state
+ *  struct actor *attacker
+ *  struct actor *defender
+ *  void return
+ */
+void melee_attack(struct game *g, struct actor *attacker, struct actor *defender)
+{
+  defender->hp--;
+
+  /*  if the melee attack kills the defender, trigger a death event */
+  if (defender->hp <= 0) {
+    actor_death(g, defender);
+  }
+}
+
+/*
+ *  disposes of an actor structure
+ *
+ *  struct game *g  -- the game state
+ *  struct actor *a -- the actor in question
+ *  void return
+ */
+void actor_death(struct game *g, struct actor *a)
+{
+  /*  dispose of the actor */
+  struct actor *current = g->actors;
+
+  while (current->next != a) {
+    current = current->next;
+  }
+
+  struct actor *temp = current->next;
+  current->next = current->next->next;
+  free(temp);
 }
 

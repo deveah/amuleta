@@ -114,6 +114,9 @@ void append_log(char *format, ...);
 
 /*  dungeon.c */
 struct dungeon *generate_dungeon(void);
+struct map *generate_map(void);
+void find_random_free_tile(struct map *m, int *x, int *y);
+void populate_map(struct game *g, int z);
 void free_dungeon(struct dungeon *d);
 struct map *generate_map(void);
 
@@ -124,7 +127,11 @@ struct actor *create_player(void);
 void run_game(struct game *g);
 void handle_key(struct game *g, struct tb_event *ev);
 void do_act(struct game *g, struct actor *a);
+struct actor *find_actor_by_position(struct game *g, int x, int y, int z);
 void move_actor(struct game *g, struct actor *a, int relx, int rely);
+
+void melee_attack(struct game *g, struct actor *attacker, struct actor *defender);
+void actor_death(struct game *g, struct actor *a);
 
 /*  ui.c */
 extern struct tb_cell

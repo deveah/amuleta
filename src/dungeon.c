@@ -12,6 +12,12 @@
 #include <termbox.h>
 #include "amuleta.h"
 
+struct tb_cell rat_cell = {
+  .ch = 'r',
+  .fg = TB_YELLOW,
+  .bg = TB_DEFAULT
+};
+
 /*
  *  generate a dungeon structure, complete with generated maps
  *
@@ -63,6 +69,62 @@ struct map *generate_map(void)
 
   DEBUG("Finished generating the map\n");
   return m;
+}
+
+/*
+ *  finds a random free tile (ie. a non-solid terrain type) on a given map
+ *
+ *  struct map *m -- the map structure
+ *  int *x        -- pointer to where to store `x'
+ *  int *y        -- pointer to where to store `y'
+ */
+void find_random_free_tile(struct map *m, int *x, int *y)
+{
+  while (1) {
+    *x = rand() % MAP_WIDTH;
+    *y = rand() % MAP_HEIGHT;
+
+    if (!(m->tile[*x][*y]->flags & TILE_FLAG_SOLID)) {
+      break;
+    }
+  }
+}
+
+/*
+ *  populate a map with other entities
+ *
+ *  struct game *g  -- the game structure to which the actors are attached
+ *  int z           -- the level index of the map
+ *  void return
+ */
+void populate_map(struct game *g, int z)
+{
+  int i;
+
+  struct actor *last_added = g->actors;
+  while (last_added->next) {
+    last_added = last_added->next;
+  }
+
+  for (i = 0; i < 20; i++) {
+    int x, y;
+    find_random_free_tile(g->dungeon->map[z], &x, &y);
+
+    /*  populate with rats */
+    struct actor *rat = malloc(sizeof(struct actor));
+    rat->name = "Rat";
+    rat->cell = &rat_cell;
+    rat->x = x;
+    rat->y = y;
+    rat->z = z;
+
+    rat->hp = 1;
+    rat->max_hp = 1;
+    rat->next = NULL;
+
+    last_added->next = rat;
+    last_added = last_added->next;
+  }
 }
 
 /*

@@ -160,7 +160,7 @@ void handle_key(struct game *g, struct tb_event *ev)
     return;
   }
 
-  DEBUG("Handling key '%c' (code %i)\n", ev->ch, ev->ch);
+  DEBUG("Handling key '%c' (code %i)\n", (ev->ch < 32) ? '.' : ev->ch, ev->ch);
 
   /*  handle an exit request */
   if (ev->ch == 'Q') {
